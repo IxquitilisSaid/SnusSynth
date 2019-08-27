@@ -30,7 +30,6 @@
               "src/styles.scss"
             ],
             "scripts": [
-              "node_modules/tone/Tone/core/Tone.js"
             ]
           },
           "configurations": {

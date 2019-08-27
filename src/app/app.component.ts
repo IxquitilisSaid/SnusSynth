@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-// import * as Tone from 'tone';
+import Tone from 'tone';
 
 @Component({
   selector: 'app-root',
@@ -40,6 +40,10 @@ export class AppComponent implements OnInit {
       }).toMaster();
       this.synth.connect(phaser);
     */
+   console.log(typeof Tone);
+
+
+   this.synth = new Tone.PolySynth(1, Tone.Synth).toMaster();
 
     // play a chord
     // polySynth.triggerAttackRelease(["F3", "C3"], "2n");
