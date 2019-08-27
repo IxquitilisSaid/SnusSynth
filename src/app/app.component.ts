@@ -1,14 +1,13 @@
-import { Component } from '@angular/core';
-import Tone from 'tone';
-
-// declare var Tone: any;
+import { Component, OnInit } from '@angular/core';
+// import * as Tone from 'tone';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+
+export class AppComponent implements OnInit {
   name = 'Angular Tone.js';
   synth: any;
   notes: string[] = [
@@ -32,10 +31,6 @@ export class AppComponent {
   constructor() {
     // let synth = new Tone.Synth();//.toMaster();
     // a 4 voice Synth
-    console.log(typeof Tone);
-
-
-    this.synth = new Tone.PolySynth(1, Tone.Synth).toMaster();
 
     /*
       var phaser = new Tone.Phaser({
@@ -49,6 +44,13 @@ export class AppComponent {
     // play a chord
     // polySynth.triggerAttackRelease(["F3", "C3"], "2n");
     // this.polySynth.triggerAttackRelease(["F3", "C4"], "8n");
+  }
+
+  ngOnInit() {
+    console.log(typeof Tone);
+
+
+    this.synth = new Tone.PolySynth(1, Tone.Synth).toMaster();
   }
 
   chorus() {
