@@ -19,6 +19,7 @@
     "@angular/platform-browser": "~8.2.3",
     "@angular/platform-browser-dynamic": "~8.2.3",
     "@angular/router": "~8.2.3",
+    "@types/webaudioapi": "0.0.27",
     "core-js": "^2.5.4",
     "rxjs": "~6.5.2",
     "tone": "^13.4.9",

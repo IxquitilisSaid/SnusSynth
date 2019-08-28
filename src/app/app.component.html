@@ -1,16 +1,22 @@
-
-<h1>{{name}}</h1>
-
 <p>
-  <button (click)="chorus()">Chorus</button>
-  <button (click)="phaser()">Phaser</button>
+	<button
+		(click)="chorus()">Chorus</button>
+	<button
+		(click)="phaser()">Phaser</button>
 </p>
 
 <div class="piano">
-  <div class="octive" *ngFor="let o of octives; let lst = last;">
-    <span class="octive-num">{{o}}</span>
-    <div class="key" *ngFor="let key of notes; " (mouseover)="msover(key+o)" (mousedown)="msdown=true;play(key+o);" (mouseup)="msdown=false" [ngClass]="{'sharp':( key.indexOf('#') >= 1), 'last':lst}">
-    {{key}}
-    </div>
-  </div>
+	<div class="octive" *ngFor="let octave of octaves; let lst = last;">
+		<span class="octive-num">
+			{{octave}}
+		</span>
+
+		<div
+			class="key"
+			*ngFor="let key of notes"
+			(mouseover)="msover(key+octave)"
+			(mousedown)="msdown=true;play(key+octave);"
+			(mouseup)="msdown=false"
+			[ngClass]="{'sharp':( key.indexOf('#') >= 1), 'last':lst}">{{key}}</div>
+	</div>
 </div>

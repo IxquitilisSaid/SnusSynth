@@ -1,97 +1,104 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import Tone from 'tone';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+	selector: 'app-root',
+	templateUrl: './app.component.html',
+	styleUrls: ['./app.component.scss']
 })
 
-export class AppComponent implements OnInit {
-  name = 'Angular Tone.js';
-  synth: any;
-  notes: string[] = [
-    'C',
-    'C#',
-    'D',
-    'D#',
-    'E',
-    'F',
-    'F#',
-    'G',
-    'G#',
-    'A',
-    'A#',
-    'B'
-  ];
-  octives: number[] = [1, 2, 3, 4, 5, 6];
+export class AppComponent {
+	// Private Vars
+	private _audioContext: any;
 
-  msdown: boolean = false;
+	// Public Vars Composed
+	public synth: any;
+	public notes: string[] = [
+		'C', 'C#',
+		'D', 'D#',
+		'E',
+		'F', 'F#',
+		'G', 'G#',
+		'A', 'A#',
+		'B'
+	];
+	public octaves: number[] = [
+		1,
+		2,
+		3,
+		4,
+		5,
+		6
+	];
 
-  constructor() {
-    // let synth = new Tone.Synth();//.toMaster();
-    // a 4 voice Synth
+	// Public Vars Simple
+	public msdown = false;
+	public isChorusOn = false;
+	public isPhaserOn = false;
 
-    /*
-      var phaser = new Tone.Phaser({
-        "frequency" : 2,
-        "octaves" : 2,
-        "baseFrequency" : 55
-      }).toMaster();
-      this.synth.connect(phaser);
-    */
-   console.log(typeof Tone);
+	constructor() {
+		try {
+			this._audioContext = new (window['AudioContext'] || window['webkitAudioContext'])();
 
+			Tone.setContext(this._audioContext);
+		} catch (error) {
+			console.log('No audio api for you, suckah');
+		}
 
-   this.synth = new Tone.PolySynth(1, Tone.Synth).toMaster();
+		this.synth = new Tone.PolySynth(1, Tone.Synth).toMaster();
+	}
 
-    // play a chord
-    // polySynth.triggerAttackRelease(["F3", "C3"], "2n");
-    // this.polySynth.triggerAttackRelease(["F3", "C4"], "8n");
-  }
+	public resetState() {
+		return this.synth = new Tone.PolySynth(1, Tone.Synth).toMaster();
+	}
 
-  ngOnInit() {
-    console.log(typeof Tone);
+	public chorus() {
+		if (!this.isChorusOn) {
+			let chorus = new Tone.Chorus(4, 2.5, 0.5);
 
+			this.synth = new Tone.PolySynth(4, Tone.MonoSynth).toMaster().connect(chorus);
+			this.isChorusOn = true;
+		} else {
+			this.isChorusOn = false;
 
-    this.synth = new Tone.PolySynth(1, Tone.Synth).toMaster();
-  }
+			this.resetState();
+		}
+	}
 
-  chorus() {
-    let chorus = new Tone.Chorus(4, 2.5, 0.5);
-    this.synth = new Tone.PolySynth(4, Tone.MonoSynth)
-      .toMaster()
-      .connect(chorus);
-  }
+	public reverb() {
+		let reverb = new Tone.JCReverb(0.9).connect(Tone.Master);
+		let delay = new Tone.FeedbackDelay(0.2);
 
-  reverb() {
-    let reverb = new Tone.JCReverb(0.9).connect(Tone.Master);
-    let delay = new Tone.FeedbackDelay(0.2);
-    this.synth = new Tone.DuoSynth().chain(delay, reverb);
-  }
+		this.synth = new Tone.DuoSynth().chain(delay, reverb);
+	}
 
-  phaser() {
-    let phaser = new Tone.Phaser({
-      frequency: 2,
-      octaves: 2,
-      baseFrequency: 55
-    }).toMaster();
+	public phaser() {
+		if (!this.isPhaserOn) {
+			let phaser = new Tone.Phaser({
+				'frequency' : 2,
+				'octaves' : 2,
+				'baseFrequency' : 55
+			}).toMaster();
 
-    this.synth.connect(phaser);
-  }
+			this.synth.connect(phaser);
 
-  msover(note) {
-    if (this.msdown) {
-      this.play(note);
-    }
-  }
+			this.isPhaserOn = true;
+		} else {
+			this.isPhaserOn = false;
 
-  play(note) {
-    // this.synth.triggerAttackRelease(["C3","E3","G3"], "8n");
-    this.synth.triggerAttackRelease(note, '8n');
-    // this.synth.triggerAttackRelease([note], "2n");
-  }
+			this.resetState();
+		}
+	}
 
-  // play a middle 'C' for the duration of an 8th note
-  // synth.triggerAttackRelease("C4", "8n");
+	public msover(note: string) {
+		if (this.msdown) {
+			this.play(note);
+		}
+	}
+
+	public play(note: string) {
+		Tone.start();
+
+		this.synth.triggerAttackRelease(note, '8n');
+	}
 }
